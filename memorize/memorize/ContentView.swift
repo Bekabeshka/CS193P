@@ -8,58 +8,58 @@
 import SwiftUI
 
 struct ContentView: View {
-    private let emojis = ["🗿", "🗽", "🎡", "🗼", "🚗", "🚕", "🚙", "🚌", "🏎", "🚓", "🚑", "🚒"]
-    
-    @State private var emojiCount = 4
+    @ObservedObject var viewModel: EmojiMemoryGame
     
     var body: some View {
         VStack {
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
-                    ForEach(emojis[0..<emojiCount], id: \.self) {
-                        CardView(title: $0, isFaceUp: true).aspectRatio(2/3, contentMode: .fit)
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))]) {
+                    ForEach(viewModel.cards) { card in
+                        CardView(card: card)
+                            .aspectRatio(2/3, contentMode: .fit)
+                            .onTapGesture {
+                                viewModel.choose(card)
+                            }
                     }
                 }
                 .foregroundColor(.purple)
             }
-            Spacer()
-            HStack {
-                remove
-                Spacer()
-                add
-            }
-            .font(.largeTitle)
-            .padding(.horizontal)
+//            Spacer()
+//            HStack {
+//                remove
+//                Spacer()
+//                add
+//            }
+//            .font(.largeTitle)
+//            .padding(.horizontal)
         }
         .padding()
     }
     
-    var remove: some View {
-        Button(action: {
-            if emojiCount > 1 {
-                emojiCount -= 1
-            }
-        }, label: {
-            Image(systemName: "minus.circle")
-        })
-    }
-    
-    var add: some View {
-        Button(action: {
-            if emojiCount < emojis.count {
-                emojiCount += 1
-            }
-        }, label: {
-            Image(systemName: "plus.circle")
-        })
-    }
+//    var remove: some View {
+//        Button(action: {
+//            if emojiCount > 1 {
+//                emojiCount -= 1
+//            }
+//        }, label: {
+//            Image(systemName: "minus.circle")
+//        })
+//    }
+//
+//    var add: some View {
+//        Button(action: {
+//            if emojiCount < viewModel.cards.count {
+//                emojiCount += 1
+//            }
+//        }, label: {
+//            Image(systemName: "plus.circle")
+//        })
+//    }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
-            .preferredColorScheme(.dark)
-.previewInterfaceOrientation(.portraitUpsideDown)
+        let game = EmojiMemoryGame()
+        ContentView(viewModel: game)
     }
 }
-
